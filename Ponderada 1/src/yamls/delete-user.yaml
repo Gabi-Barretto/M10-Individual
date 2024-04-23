@@ -1,0 +1,39 @@
+
+tags:
+  - "User"
+summary: "Delete a user"
+description: "This endpoint deletes a specific user by their ID."
+operationId: "deleteUser"
+produces:
+  - "application/json"
+parameters:
+  - in: "path"
+    name: "id"
+    type: "integer"
+    required: true
+    description: "ID of the user to delete"
+responses:
+  200:
+    description: "User deleted successfully"
+    schema:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "User deleted successfully"
+  404:
+    description: "User not found"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "User not found"
+  500:
+    description: "Internal server error"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "Internal server error"

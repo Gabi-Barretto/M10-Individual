@@ -1,0 +1,46 @@
+
+tags:
+  - "Auth"
+summary: "User login"
+description: "This endpoint allows users to login by providing their email and password."
+operationId: "loginUser"
+consumes:
+  - "application/x-www-form-urlencoded"
+produces:
+  - "application/json"
+parameters:
+  - in: "formData"
+    name: "email"
+    type: "string"
+    required: true
+    description: "Email of the user"
+  - in: "formData"
+    name: "password"
+    type: "string"
+    required: true
+    description: "Password of the user"
+responses:
+  200:
+    description: "Login successful"
+    schema:
+      type: "object"
+      properties:
+        message:
+          type: "string"
+          example: "Logged in successfully"
+  401:
+    description: "Unauthorized"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "Invalid email or password"
+  500:
+    description: "Internal server error"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "Internal server error"

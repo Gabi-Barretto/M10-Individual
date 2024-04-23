@@ -1,0 +1,42 @@
+tags:
+  - "User"
+summary: "Update a user"
+description: "This endpoint updates the details of an existing user identified by their ID."
+operationId: "updateUser"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - in: "path"
+    name: "id"
+    type: "integer"
+    required: true
+    description: "ID of the user to update"
+  - in: "body"
+    name: "user"
+    required: true
+    description: "User data to update"
+    schema:
+      $ref: "#/definitions/UserUpdate"
+responses:
+  200:
+    description: "User updated successfully"
+    schema:
+      $ref: "#/definitions/UserUpdate"
+  404:
+    description: "User not found"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "User not found"
+  500:
+    description: "Internal server error"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "Internal server error"

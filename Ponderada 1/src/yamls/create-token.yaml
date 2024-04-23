@@ -1,0 +1,51 @@
+tags:
+  - "Auth"
+summary: "Create an authentication token"
+description: "This endpoint generates an authentication token for a user based on their email and password."
+operationId: "createToken"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+parameters:
+  - in: "body"
+    name: "credentials"
+    required: true
+    description: "User login credentials"
+    schema:
+      type: "object"
+      properties:
+        email:
+          type: "string"
+          description: "Email of the user"
+        password:
+          type: "string"
+          description: "Password of the user"
+responses:
+  200:
+    description: "Token created successfully"
+    schema:
+      type: "object"
+      properties:
+        token:
+          type: "string"
+          example: "generated_token"
+        user_id:
+          type: "integer"
+          example: 1
+  401:
+    description: "Unauthorized"
+    schema:
+      type: "object"
+      properties:
+        msg:
+          type: "string"
+          example: "Bad username or password"
+  500:
+    description: "Internal server error"
+    schema:
+      type: "object"
+      properties:
+        error:
+          type: "string"
+          example: "Internal server error"

@@ -1,0 +1,6 @@
+Flask
+Flask-JWT-Extended
+Flasgger
+Flask-SQLAlchemy
+SQLAlchemy
+requests
