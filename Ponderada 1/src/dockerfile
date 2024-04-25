@@ -1,0 +1,22 @@
+# Usar uma imagem base do Python
+FROM python:3.8-slim
+
+# Definir o diretório de trabalho
+WORKDIR /app
+
+# Copiar os arquivos de dependência e instalá-los
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar o resto da aplicação para o diretório de trabalho
+COPY . .
+
+# Expor a porta em que a aplicação rodará
+EXPOSE 5000
+
+# Definir a variável de ambiente para rodar em produção
+ENV FLASK_ENV=production
+ENV FLASK_APP=main.py
+
+# Comando para criar o banco de dados se necessário
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0"]

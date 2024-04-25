@@ -1,6 +1,7 @@
 Flask
+Flask-Cors
 Flask-JWT-Extended
-Flasgger
 Flask-SQLAlchemy
-SQLAlchemy
+psycopg2-binary
+flasgger
 requests

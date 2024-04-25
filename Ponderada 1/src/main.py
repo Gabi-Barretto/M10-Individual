@@ -156,4 +156,4 @@ def create_token():
     return jsonify({"token": access_token, "user_id": user.id}) 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

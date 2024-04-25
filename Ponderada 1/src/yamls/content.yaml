@@ -6,14 +6,7 @@ operationId: "getContent"
 produces:
   - "text/html"
 security:
-  - cookieAuth: []  # Reference the security scheme named 'jwt' defined below.
-parameters:  # Define required cookie here
-  - in: cookie
-    name: access_token_cookie
-    required: true
-    schema:
-      type: string
-    description: "JWT token required to access content"
+  - bearerAuth: []  # Reference the security scheme named 'jwt' defined below.
 responses:
   200:
     description: "Content page rendered successfully."
@@ -25,7 +18,7 @@ responses:
 
 components:
   securitySchemes:
-    cookieAuth:
-      type: apiKey
-      in: cookie
-      name: access_token_cookie
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
