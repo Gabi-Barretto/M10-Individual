@@ -2,11 +2,14 @@ from flask import Flask, jsonify, make_response, request, render_template
 import requests as http_request
 from database.database import db
 from database.models import User
+from flask_cors import CORS
 
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, set_access_cookies
 from flasgger import Swagger, swag_from
 
 app = Flask(__name__, template_folder="templates")
+
+CORS(app, origins=["http://127.0.0.1:5000/token"], supports_credentials=True)
 
 # Database Configuration
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
@@ -120,19 +123,23 @@ def login():
 
 # Auth Routes
 @app.route("/user-login", methods=["GET"])
+@swag_from("yamls/user-login.yaml")
 def user_login():
     return render_template("login.html")
 
 @app.route("/user-register", methods=["GET"])
+@swag_from("yamls/user-register.yaml")
 def user_register():
     return render_template("register.html") 
 
 @app.route("/content", methods=["GET"])
 @jwt_required()
+@swag_from("yamls/content.yaml")
 def content():
     return render_template("content.html")
 
 @app.route("/error", methods=["GET"])
+@swag_from("yamls/error.yaml")
 def error():
     return render_template("error.html")
 

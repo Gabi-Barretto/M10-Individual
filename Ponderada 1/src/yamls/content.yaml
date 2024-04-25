@@ -1,0 +1,31 @@
+tags:
+  - "Auth"
+summary: "Protected content page"
+description: "Returns the protected content page, requires JWT authentication."
+operationId: "getContent"
+produces:
+  - "text/html"
+security:
+  - cookieAuth: []  # Reference the security scheme named 'jwt' defined below.
+parameters:  # Define required cookie here
+  - in: cookie
+    name: access_token_cookie
+    required: true
+    schema:
+      type: string
+    description: "JWT token required to access content"
+responses:
+  200:
+    description: "Content page rendered successfully."
+    content:
+      text/html:
+        schema:
+          type: "string"
+          example: "<html>Content Page</html>"
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: access_token_cookie

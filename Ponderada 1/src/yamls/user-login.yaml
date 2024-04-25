@@ -1,0 +1,14 @@
+tags:
+  - "User"
+summary: "User login page"
+description: "Returns the user login page."
+operationId: "userLogin"
+produces:
+  - "text/html"
+responses:
+  200:
+    description: "Login page rendered successfully."
+    content:
+      text/html:
+        schema:
+          type: "string"

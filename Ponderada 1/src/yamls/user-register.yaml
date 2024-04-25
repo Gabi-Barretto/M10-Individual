@@ -1,0 +1,14 @@
+tags:
+  - "User"
+summary: "User registration page"
+description: "Returns the user registration page."
+operationId: "userRegister"
+produces:
+  - "text/html"
+responses:
+  200:
+    description: "Registration page rendered successfully."
+    content:
+      text/html:
+        schema:
+          type: "string"

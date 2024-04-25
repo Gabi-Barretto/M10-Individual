@@ -1,0 +1,14 @@
+tags:
+  - "Auth"
+summary: "Error page"
+description: "Returns the error page."
+operationId: "getErrorPage"
+produces:
+  - "text/html"
+responses:
+  200:
+    description: "Error page rendered successfully."
+    content:
+      text/html:
+        schema:
+          type: "string"

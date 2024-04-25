@@ -35,7 +35,7 @@ Este documento descreve a estrutura e funcionalidades de um projeto Flask que ut
 ## Configurando o Insomnia
 
 - **Importar Coleção**: Baixe o arquivo de coleção do Insomnia (geralmente com extensão .json) fornecido para o projeto. No Insomnia, clique em "Import/Export" e selecione "Import Data". Escolha o arquivo de coleção baixado.
-- **Configurar Ambiente**: Se necessário, configure variáveis de ambiente (JSON com a indicação da variável ex. "id": 1) no Insomnia para definir URLs base, tokens de autenticação ou outros parâmetros usados nas requisições.
+- **Configurar Ambiente**: Se necessário, configure variáveis de ambiente (JSON com a indicação da variável ex. "id": 1) e Cookies (como no caso do endpoint /content que precisa de um autenticador), no Insomnia para definir URLs base, tokens de autenticação ou outros parâmetros usados nas requisições.
 - **Enviar Requisições**: Utilize a interface do Insomnia para enviar requisições para as diferentes rotas da API, seguindo a documentação fornecida pelo Swagger e os exemplos na coleção importada.
 
 ## Observações
