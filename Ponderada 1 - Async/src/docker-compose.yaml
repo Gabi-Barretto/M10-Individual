@@ -6,6 +6,6 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./data:/app/data   # Mapping a local directory to store SQLite database file
+      - ./test.db:/app/test.db
     environment:
       - PYTHONUNBUFFERED=1
