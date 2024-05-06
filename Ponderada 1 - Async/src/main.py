@@ -1,16 +1,28 @@
-from fastapi import FastAPI, HTTPException, Depends, Request, Form
+from fastapi import FastAPI, HTTPException, Depends, Request, Form, Body
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
+
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
+
 from database.database import SessionLocal, engine, create_db
 from database.models import User, Base
+
 import uvicorn
 import sys
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency for database sessions
 def get_db():
@@ -33,11 +45,14 @@ def user_register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 @app.post("/register")
-def register_user(request: Request, name: str = Form(...), email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+def register_user(request: Request, user_data: dict = Body(...), db: Session = Depends(get_db)):
+    name = user_data['name']
+    email = user_data['email']
+    password = user_data['password']
     user = User(name=name, email=email, password=password)
     db.add(user)
     db.commit()
-    return templates.TemplateResponse("login.html", {"request": request, "message": "User registered successfully!"})
+    return {"message": "User registered successfully!"}
 
 @app.post("/login")
 def login(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
