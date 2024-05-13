@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_template/pages/register_page.dart';
 import 'package:flutter_template/pages/content_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_template/pages/error_page.dart'; // Certifique-se de ter este import
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,9 +30,9 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
-      var data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', data['access_token']);
 
@@ -45,8 +46,9 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 16.0,
         );
       } else {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ErrorPage()));
         Fluttertoast.showToast(
-          msg: "Login Failed: ${data['message']}",
+          msg: "Login Failed: ${jsonDecode(response.body)['message']}",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,
@@ -55,6 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ErrorPage()));
       Fluttertoast.showToast(
         msg: "Error: $e",
         toastLength: Toast.LENGTH_LONG,
