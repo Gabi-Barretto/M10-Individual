@@ -25,7 +25,7 @@ Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que 
 - **Login**: A rota `/login` autentica o usuário com email e senha, gerando um token JWT e armazenando-o em um cookie.
 - **CRUD de Usuários**: As rotas `/users`, `/users/{user_id}`, permitem listar, buscar, atualizar e deletar usuários.
 
-## Instruções para Rodar o Projeto
+## Instruções para Rodar o Backend
 
 0. **Utilize do diretorio** [Ponderada 1 - Async](https://github.com/Gabi-Barretto/M10-Individual/tree/main/Ponderada%201%20-%20Async), para rodar o backend.
 1. **Instalar dependências**: Execute `pip install -r requirements.txt` para instalar as bibliotecas necessárias.
@@ -38,7 +38,7 @@ Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que 
    - No terminal, navegue até o diretório raiz do projeto onde está localizado o arquivo `docker-compose.yaml`.
    - Execute `docker-compose up --build` para construir e iniciar os containers.
 
-## Executando o Projeto no Android Studio
+## Instruções para Rodar o Frontend
 
 1. **Abra o Android Studio**: Inicie o Android Studio e aguarde até que ele termine de carregar e utilize do diretório [Ponderada 2](https://github.com/Gabi-Barretto/M10-Individual/tree/main/Ponderada%202).
 
