@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, Request, Form, Body
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
@@ -11,6 +12,52 @@ from database.models import User, Base
 
 import uvicorn
 import sys
+import pika
+import datetime
+import os
+
+class RegisterData(BaseModel):
+    name: str
+    email: str
+    password: str
+
+class Message(BaseModel):
+    date: datetime = None
+    msg: str
+
+# Cria uma função que faz o envio das mensagens para o RabbitMQ
+def send_message_rabbitmq(msg: Message):
+    # Verifica se as variáveis de ambiente estão definidas
+    if "RABBITMQ_HOST" not in os.environ or "RABBITMQ_PORT" not in os.environ:
+        raise Exception("RABBITMQ_HOST and RABBITMQ_PORT must be defined in environment variables")
+
+    credentials = pika.PlainCredentials(os.environ["RABBITMQ_DEFAULT_USER"], os.environ["RABBITMQ_DEFAULT_PASS"])
+    connection = pika.BlockingConnection(pika.ConnectionParameters(
+        os.environ["RABBITMQ_HOST"]
+        , os.environ["RABBITMQ_PORT"]
+        , '/'
+        , credentials))
+    channel = connection.channel()
+    channel.queue_declare(queue=os.environ["RABBITMQ_QUEUE"])
+    channel.basic_publish(exchange='', routing_key=os.environ["RABBITMQ_QUEUE"], body=f"{msg.date} - {msg.msg}")
+    connection.close()
+
+# Cria uma função que recebe as mensagens para o RabbitMQ
+def receive_message_rabbitmq():
+    # Verifica se as variáveis de ambiente estão definidas
+    if "RABBITMQ_HOST" not in os.environ or "RABBITMQ_PORT" not in os.environ:
+        raise Exception("RABBITMQ_HOST and RABBITMQ_PORT must be defined in environment variables")
+
+    credentials = pika.PlainCredentials(os.environ["RABBITMQ_DEFAULT_USER"], os.environ["RABBITMQ_DEFAULT_PASS"])
+    connection = pika.BlockingConnection(pika.ConnectionParameters(
+        os.environ["RABBITMQ_HOST"]
+        , os.environ["RABBITMQ_PORT"]
+        , '/'
+        , credentials))
+    channel = connection.channel()
+    channel.queue_declare(queue=os.environ["RABBITMQ_QUEUE"])
+    channel.basic_consume(queue=os.environ["RABBITMQ_QUEUE"], on_message_callback=callback)
+    channel.start_consuming()
 
 app = FastAPI()
 
@@ -44,15 +91,29 @@ def user_login(request: Request):
 def user_register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
-@app.post("/register")
-def register_user(request: Request, user_data: dict = Body(...), db: Session = Depends(get_db)):
-    name = user_data['name']
-    email = user_data['email']
-    password = user_data['password']
+@app.post("/register", response_class=JSONResponse)
+async def register_user(request: Request, db: Session = Depends(get_db)):
+    try:
+        # Tentando ler JSON primeiro
+        data = await request.json()
+    except:
+        # Se falhar, tente ler como dados de formulário
+        form_data = await request.form()
+        data = { "name": form_data.get("name"), "email": form_data.get("email"), "password": form_data.get("password") }
+    
+    # Verifica se algum dos campos está vazio
+    if not all(data.values()):
+        return JSONResponse(status_code=400, content={"message": "Missing data"})
+
+    name = data["name"]
+    email = data["email"]
+    password = data["password"]
+
+    # Logica de criacao de usuario
     user = User(name=name, email=email, password=password)
     db.add(user)
     db.commit()
-    return {"message": "User registered successfully!"}
+    return JSONResponse(content={"message": "User registered successfully!"})
 
 @app.post("/login")
 def login(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):

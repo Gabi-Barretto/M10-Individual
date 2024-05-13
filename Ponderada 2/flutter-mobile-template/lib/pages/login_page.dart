@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_template/pages/register_page.dart';
 import 'package:flutter_template/pages/content_page.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -29,8 +29,12 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final response = await http.post(url, headers: headers, body: body);
+      var data = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('accessToken', data['access_token']);
+
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => ContentPage()));
         Fluttertoast.showToast(
           msg: "Login Successful",
@@ -42,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       } else {
         Fluttertoast.showToast(
-          msg: "Login Failed: ${response.body}",
+          msg: "Login Failed: ${data['message']}",
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.CENTER,
           backgroundColor: Colors.red,

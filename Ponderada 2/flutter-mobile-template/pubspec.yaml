@@ -36,6 +36,9 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^0.13.3
+  url_launcher: ^6.0.17
+
+
 
 dev_dependencies:
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -82,3 +85,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+

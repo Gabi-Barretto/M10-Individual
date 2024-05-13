@@ -3,8 +3,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 
-from rabbitmq.producer import log_to_rabbit as send_log_message
-
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 
@@ -13,7 +12,10 @@ from database.models import User, Base
 
 import uvicorn
 import sys
-import pika
+
+class LoginData(BaseModel):
+    email: str
+    password: str
 
 app = FastAPI()
 
@@ -47,28 +49,46 @@ def user_login(request: Request):
 def user_register(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
-@app.post("/register")
-def register_user(request: Request, user_data: dict = Body(...), db: Session = Depends(get_db)):
-    name = user_data['name']
-    email = user_data['email']
-    password = user_data['password']
+@app.post("/register", response_class=JSONResponse)
+async def register_user(request: Request, db: Session = Depends(get_db)):
+    try:
+        # Tentando ler JSON primeiro
+        data = await request.json()
+    except:
+        # Se falhar, tente ler como dados de formulário
+        form_data = await request.form()
+        data = { "name": form_data.get("name"), "email": form_data.get("email"), "password": form_data.get("password") }
+    
+    # Verifica se algum dos campos está vazio
+    if not all(data.values()):
+        return JSONResponse(status_code=400, content={"message": "Missing data"})
+
+    name = data["name"]
+    email = data["email"]
+    password = data["password"]
+
+    # Logica de criacao de usuario
     user = User(name=name, email=email, password=password)
     db.add(user)
     db.commit()
-    send_log_message(f"New user registered: {email}")
-    return {"message": "User registered successfully!"}
+    return JSONResponse(content={"message": "User registered successfully!"})
 
-@app.post("/login")
-def login(request: Request, email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == email, User.password == password).first()
+
+@app.post("/login", response_class=JSONResponse)
+async def login(request: Request, db: Session = Depends(get_db)):
+    try:
+        data = await request.json()
+    except:
+        form_data = await request.form()
+        data = { "email": form_data.get("email"), "password": form_data.get("password") }
+
+    user = db.query(User).filter(User.email == data["email"], User.password == data["password"]).first()
     if not user:
-        return templates.TemplateResponse("error.html", {"request": request, "message": "Bad username or password"})
-    access_token = jwt.encode({"sub": user.id}, "goku-vs-vegeta", algorithm="HS256")
-    response = templates.TemplateResponse("content.html", {"request": request, "message": "Login Successful"})
-    response.set_cookie(key="access_token", value=access_token, httponly=True)
-    send_log_message(f"User logged in: {email}")
-    return response
-
+        return JSONResponse(status_code=400, content={"message": "Bad username or password"})
+    else:
+        access_token = jwt.encode({"sub": user.id}, "goku-vs-vegeta", algorithm="HS256")
+        return JSONResponse(status_code=200, content={"message": "Login Successful", "access_token": access_token})
+    
 @app.get("/users")
 def get_users(db: Session = Depends(get_db)):
     users = db.query(User).all()

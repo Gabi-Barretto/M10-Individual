@@ -6,11 +6,12 @@ class ContentPage extends StatefulWidget {
 }
 
 class _ContentPageState extends State<ContentPage> {
-  final String imageUrl = "https://picsum.photos/300";
+  String imageUrl = "https://picsum.photos/300";
 
   void _refreshImage() {
     setState(() {
-      // This changes the key of the Image widget, forcing it to reload.
+      // Adiciona um parâmetro de query timestamp à URL para forçar uma nova carga
+      imageUrl = "https://picsum.photos/300?random=${DateTime.now().millisecondsSinceEpoch}";
     });
   }
 
@@ -31,7 +32,7 @@ class _ContentPageState extends State<ContentPage> {
             const SizedBox(height: 20),
             Image.network(
               imageUrl,
-              key: ValueKey(DateTime.now().millisecondsSinceEpoch), // Force re-render
+              key: ValueKey(imageUrl), // Usa a URL atualizada como key
             ),
             const SizedBox(height: 20),
             ElevatedButton(
