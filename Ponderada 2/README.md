@@ -1,6 +1,8 @@
 # Documentação do Projeto FastAPI com JWT e Flutter
 
-Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que utiliza JWT para autenticação.
+Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que utiliza JWT para autenticação e Flutter para sua UI.
+
+### [*Vídeo Demonstrativo*](https://drive.google.com/file/d/1Vh3TFzF9M7p_2Tzg7zVJIRP1NTqEElaN/view?usp=sharing)
 
 ## Tecnologias Utilizadas
 

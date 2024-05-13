@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_template/pages/register_page.dart';
 import 'package:flutter_template/pages/content_page.dart';
-import 'package:flutter_template/pages/error_page.dart'; // Certifique-se de ter este import
+import 'package:flutter_template/pages/error_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
