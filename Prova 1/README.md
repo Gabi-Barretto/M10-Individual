@@ -1,6 +1,6 @@
-# Documentação do Projeto FastAPI
+# Documentação do Projeto FastAPI e Insomnia
 
-Este documento descreve a estrutura e funcionalidades de um projeto FastAPI.
+Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que pode ser testado via collection do Insominia disponível no repositótio em [Collection](https://github.com/Gabi-Barretto/M10-Individual/tree/main/Prova%201/Collection).
 
 ## Tecnologias Utilizadas
 
