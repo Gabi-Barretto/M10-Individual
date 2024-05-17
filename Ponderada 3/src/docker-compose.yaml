@@ -19,6 +19,33 @@ services:
       - "5672:5672"
       - "15672:15672"
     environment:
+      - RABBITMQ_HOST=${RABBITMQ_HOST}
+      - RABBITMQ_PORT=${RABBITMQ_PORT}
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_QUEUE=${RABBITMQ_QUEUE}
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: >
+      sh -c "
+        rabbitmq-server &
+        sleep 10 &&
+        rabbitmqctl add_user myuser mypassword &&
+        rabbitmqctl set_user_tags myuser administrator &&
+        rabbitmqctl set_permissions -p / myuser '.*' '.*' '.*' &&
+        rabbitmqctl delete_user guest &&
+        rabbitmqctl stop &&
+        rabbitmq-server
+      "
 
+  gateway:
+    build: ./nginx
+    ports:
+      - "8000:80"
+    depends_on:
+      - rabbitmq
+      - app
+    restart: on-failure
