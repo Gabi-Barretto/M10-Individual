@@ -149,7 +149,7 @@ def login(request: Request, email: str = Form(...), password: str = Form(...), d
     # Enviar log para RabbitMQ
     log_message = Message(date=datetime.datetime.now(), msg=f"User {email} logged in.")
     send_message_rabbitmq(log_message)
-    receive_message_rabbitmq()
+    receive_last_message_rabbitmq()
 
     return response
 
