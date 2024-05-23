@@ -1,54 +1,77 @@
-Para criar um material de estudo mais completo sobre os temas de sua prova, vamos adicionar detalhes e exemplos práticos, bem como sugestões de leitura para aprofundamento.
+### Documentação do Projeto FastAPI com JWT, Flutter e RabbitMQ
 
-### 1. Modelo de Maturidade de Richardson
+Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que utiliza JWT para autenticação, Flutter para sua UI, e RabbitMQ para salvar logs.
 
-#### Detalhamento
-- **Nível 0 (POX - Plain Old XML):** A comunicação é feita por XML ou JSON em um único endpoint. Exemplo: SOAP.
-- **Nível 1 (Recursos):** Introduz recursos distintos com URI separadas. Por exemplo, `/clientes` para acessar clientes e `/pedidos` para pedidos.
-- **Nível 2 (Verbos HTTP):** Utiliza métodos HTTP para representar operações, como GET para recuperar recursos, POST para criar novos recursos, PUT para atualizar recursos e DELETE para remover recursos.
-- **Nível 3 (HATEOAS):** As respostas da API incluem links para outros recursos ou ações relacionadas, permitindo uma navegação como em uma página web.
+### [*Vídeo Demonstrativo*](https://drive.google.com/file/d/1Vh3TFzF9M7p_2Tzg7zVJIRP1NTqEElaN/view?usp=sharing)
 
-#### Recomendações de Leitura
-- **Artigo de Martin Fowler sobre o Modelo de Maturidade de Richardson**
-- **"RESTful Web APIs" por Leonard Richardson e Sam Ruby**
+## Tecnologias Utilizadas
 
-### 2. Sistemas Síncronos e Assíncronos
+- **FastAPI**: Framework web Python assíncrono de alto desempenho.
+- **SQLAlchemy**: ORM para interação com banco de dados.
+- **SQLite**: Banco de dados utilizado.
+- **Jinja2**: Engine de templates para renderização de páginas HTML.
+- **uvicorn**: Servidor ASGI de alto desempenho.
+- **RabbitMQ**: Sistema de mensageria para gerenciamento de logs.
 
-#### Detalhamento
-- **Sistemas Síncronos:** Um exemplo é uma chamada telefônica, onde a comunicação ocorre em tempo real e ambas as partes devem estar presentes simultaneamente.
-- **Sistemas Assíncronos:** Um exemplo comum é o email, onde a mensagem pode ser enviada e lida em tempos diferentes, não exigindo a presença simultânea das partes envolvidas. Ele entende que pode começar outra tarefa que não dependa daquilo.
+## Estrutura do Projeto
 
-#### Recomendações de Leitura
-- **"Concurrent Programming in Java" por Doug Lea**
+- **main.py**: Arquivo principal da aplicação, onde são definidas as rotas, configuração do banco de dados, JWT e RabbitMQ.
+- **database/database.py**: Configurações do SQLAlchemy e criação da instância do banco de dados.
+- **database/models.py**: Define os modelos do banco de dados, no caso, o modelo User.
+- **templates/**: Pasta contendo os templates HTML para login, registro e página de erro.
 
-### 3. Desenvolvimento Mobile com Flutter
+## Funcionalidades
 
-#### Detalhamento
-- **Hot Reload:** O Flutter oferece uma característica notável chamada hot reload, que permite aos desenvolvedores verem as mudanças no código quase instantaneamente sem perder o estado da aplicação.
-- **Widgets:** Tudo no Flutter é um widget, desde a estrutura da página até os elementos individuais de interface, como botões e sliders.
+- **Registro de Usuários**: A rota `/register` permite registrar novos usuários, armazenando as informações no banco de dados.
+- **Login**: A rota `/login` autentica o usuário com email e senha, gerando um token JWT e armazenando-o em um cookie.
+- **CRUD de Usuários**: As rotas `/users`, `/users/{user_id}`, permitem listar, buscar, atualizar e deletar usuários.
+- **Log de Ações**: As rotas `/send-log` e `/receive-log` permitem o envio e recebimento de logs via RabbitMQ.
 
-#### Recomendações de Leitura
-- **Documentação Oficial do Flutter**
-- **"Flutter in Action" por Eric Windmill**
+## Instruções para Rodar o Backend
 
-### 4. Monolitos vs Microsserviços
+0. **Utilize do diretório** [Ponderada 1 - Async](https://github.com/Gabi-Barretto/M10-Individual/tree/main/Ponderada%201%20-%20Async), para rodar o backend.
+1. **Instalar dependências**: Execute `pip install -r requirements.txt` para instalar as bibliotecas necessárias.
+2. **Criar banco de dados**: Execute `python3 main.py create_db` para criar as tabelas no banco de dados SQLite.
+3. **Configurar variáveis de ambiente**: Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+   ```env
+   RABBITMQ_HOST=localhost
+   RABBITMQ_PORT=5672
+   RABBITMQ_DEFAULT_USER=guest
+   RABBITMQ_DEFAULT_PASS=guest
+   RABBITMQ_QUEUE=logs
+   ```
+4. **Rodar a aplicação**: Execute `python3 main.py` para iniciar o servidor FastAPI.
+5. **Acessar a aplicação**: Abra o navegador e acesse [http://localhost:5000/](http://localhost:5000/) para acessar a aplicação e testar as funcionalidades de registro e login de usuários.
+6. **Acessar a documentação**: Abra o navegador e acesse [http://localhost:5000/docs](http://localhost:5000/docs) para acessar a documentação das rotas e testar as funcionalidades disponíveis.
+7. **Rodar a aplicação com Docker Compose**:
+   - Certifique-se de ter o Docker e o Docker Compose instalados.
+   - No terminal, navegue até o diretório raiz do projeto onde está localizado o arquivo `docker-compose.yaml`.
+   - Execute `docker-compose up --build` para construir e iniciar os containers.
 
-#### Detalhamento
-- **Monolitos:** Pode ser vantajoso para aplicações pequenas a médias devido à simplicidade de desenvolvimento e deploy. Exemplo: Aplicações internas de gestão empresarial.
-- **Microsserviços:** Ideal para grandes aplicações e organizações com equipes de desenvolvimento múltiplas, onde os serviços podem ser desenvolvidos, atualizados e escalados de forma independente.
+## Instruções para Rodar o Frontend
 
-#### Recomendações de Leitura
-- **"Building Microservices" por Sam Newman**
-- **Artigos de Martin Fowler sobre microsserviços**
+1. **Abra o Android Studio**: Inicie o Android Studio e aguarde até que ele termine de carregar e utilize do diretório [Ponderada 2](https://github.com/Gabi-Barretto/M10-Individual/tree/main/Ponderada%202).
 
-### 5. Threads e Processos
+2. **Importe o Projeto**:
+   - No menu inicial, escolha 'Open an Existing Project' e navegue até a pasta onde você clonou o seu projeto Flutter.
+   - Selecione a pasta do projeto e clique em 'OK' para abrir o projeto no Android Studio.
 
-#### Detalhamento
-- **Threads:** Em um navegador web, múltiplas abas podem ser carregadas em threads separadas, permitindo que uma aba carregue enquanto outra está sendo visualizada.
-- **Processos:** Aplicações como editores de texto e navegadores operam como processos separados no sistema operacional, isolando falhas e garantindo que problemas em uma aplicação não afetem as demais.
+3. **Configure o Emulador Android**:
+   - Vá para 'AVD Manager' (Android Virtual Device Manager) no menu 'Tools' > 'AVD Manager'.
+   - Clique em 'Create Virtual Device...' e selecione um dispositivo (por exemplo, Pixel 5).
+   - Escolha uma imagem do sistema (recomenda-se usar a última versão do Android API que é compatível com seu aplicativo) e finalize a criação do emulador.
 
-#### Recomendações de Leitura
-- **"Modern Operating Systems" por Andrew S. Tanenbaum**
-- **"Operating Systems: Three Easy Pieces" por Remzi H. Arpaci-Dusseau**
+4. **Execute o Emulador**:
+   - Inicie o emulador criado clicando no botão 'play' ao lado do dispositivo virtual na lista do AVD Manager.
 
-Estas leituras e exemplos adicionais devem fornecer uma compreensão mais aprofundada e prática dos tópicos para sua prova.
+5. **Execute o Aplicativo Flutter**:
+   - No Android Studio, certifique-se de que o nome do seu dispositivo emulador está selecionado na barra de ferramentas.
+   - Clique no ícone 'Run' (o ícone de um triângulo verde) para compilar o projeto e instalar o aplicativo no emulador.
+   - Aguarde até que o aplicativo seja lançado no emulador.
+
+6. **Interagindo com o Aplicativo**:
+   - O aplicativo deve agora estar em execução no emulador. Você pode interagir com ele como faria em um dispositivo físico.
+   - Teste as funcionalidades implementadas, como as telas de login e registro, e verifique se as transições para outras páginas estão funcionando conforme esperado.
+
+7. **Depuração e Logs**:
+   - Utilize a janela 'Logcat' no Android Studio para ver os logs de execução e mensagens de erro. Isso pode ajudar na depuração de problemas que ocorrem durante a execução do aplicativo.
