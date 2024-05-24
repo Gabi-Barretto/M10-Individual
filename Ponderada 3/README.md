@@ -25,7 +25,9 @@ Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que 
 - **Registro de Usuários**: A rota `/register` permite registrar novos usuários, armazenando as informações no banco de dados.
 - **Login**: A rota `/login` autentica o usuário com email e senha, gerando um token JWT e armazenando-o em um cookie.
 - **CRUD de Usuários**: As rotas `/users`, `/users/{user_id}`, permitem listar, buscar, atualizar e deletar usuários.
-- **Log de Ações**: As rotas `/send-log` e `/receive-log` permitem o envio e recebimento de logs via RabbitMQ.
+- **Log de Ações**: As rotas `/send-log` e `/receive-log` permitem o envio e recebimento de logs via RabbitMQ, o mesmo método chamado nesses endpoints e foi aplicado nas rotas de cadastro e login.
+
+![Rabbit Existe](./Mídia/image.png)
 
 ## Instruções para Rodar o Backend
 

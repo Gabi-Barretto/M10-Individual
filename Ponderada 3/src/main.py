@@ -211,7 +211,7 @@ async def receive_log():
             messages.append(body.decode())
             ch.basic_ack(delivery_tag=method.delivery_tag)
         
-        receive_message_rabbitmq(callback)
+        receive_last_message_rabbitmq(callback)
         
         return JSONResponse(content={"messages": messages})
     except Exception as e:
