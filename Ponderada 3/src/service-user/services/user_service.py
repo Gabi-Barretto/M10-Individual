@@ -1,7 +1,7 @@
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from app.models.user_model import User
-from app.utils.auth import create_access_token
+from models.user_model import User
+from utils.auth import create_access_token
 import pika
 
 def get_rabbitmq_connection():

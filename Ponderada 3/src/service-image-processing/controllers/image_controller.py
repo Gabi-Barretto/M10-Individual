@@ -1,5 +1,5 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from app.services.image_service import remove_background
+from services.image_service import remove_background
 
 router = APIRouter()
 

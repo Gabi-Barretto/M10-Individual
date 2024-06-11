@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.controllers import image_controller
+from controllers import image_controller
 
 router = APIRouter()
 
