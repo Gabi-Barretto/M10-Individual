@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.10'
 
 services:
   user-service:
@@ -41,7 +41,7 @@ services:
       - app-network
 
   nginx:
-    image: nginx:latest
+    build: ./nginx
     container_name: nginx
     ports:
       - "80:80"
