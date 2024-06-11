@@ -3,3 +3,4 @@ sqlalchemy
 passlib[bcrypt]
 jose
 uvicorn
+pika

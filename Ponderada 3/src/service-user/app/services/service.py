@@ -2,6 +2,18 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from app.models.user_model import User
 from app.utils.auth import create_access_token
+import pika
+
+def get_rabbitmq_connection():
+    parameters = pika.ConnectionParameters('rabbitmq')
+    return pika.BlockingConnection(parameters)
+
+def send_message_to_queue(queue_name, message):
+    connection = get_rabbitmq_connection()
+    channel = connection.channel()
+    channel.queue_declare(queue=queue_name)
+    channel.basic_publish(exchange='', routing_key=queue_name, body=message)
+    connection.close()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -17,6 +29,7 @@ def create_user(db: Session, username: str, email: str, password: str):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+    send_message_to_queue('user_registration', f'User {username} registered.')
     return new_user
 
 def authenticate_user(db: Session, username: str, password: str):
