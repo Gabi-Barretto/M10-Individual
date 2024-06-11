@@ -1,6 +1,7 @@
 fastapi
+uvicorn[standard]
 sqlalchemy
+pydantic
 passlib[bcrypt]
-jose
-uvicorn
+python-jose[cryptography]
 pika

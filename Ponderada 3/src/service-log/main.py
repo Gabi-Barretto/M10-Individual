@@ -1,7 +1,7 @@
 from fastapi import FastAPI
-from app.routes import log_routes
-from app.database import engine
-from app.models import log_model
+from routes import log_routes
+from database import engine
+from models import log_model
 
 app = FastAPI()
 
