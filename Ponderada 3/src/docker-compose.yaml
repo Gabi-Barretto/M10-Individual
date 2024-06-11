@@ -1,60 +1,33 @@
-version: '3.9'
+version: '3.8'
 
 services:
-  app:
-    build: .
+  user-service:
+    build: ./service_user
     ports:
-      - "5000:5000"
+      - "8000:8000"
     volumes:
-      - app_data:/app
+      - ./service_user/app:/app/app
     environment:
-      - PYTHONUNBUFFERED=1
-      - DATABASE_URL=sqlite:///./app/test.db
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - RABBITMQ_DEFAULT_USER=myuser
-      - RABBITMQ_DEFAULT_PASS=mypassword
-      - RABBITMQ_QUEUE=myqueue
-    depends_on:
-      rabbitmq:
-        condition: service_healthy
+      - DATABASE_URL=sqlite:///./test.db
 
-  rabbitmq:
-    image: rabbitmq:3.12.14-management-alpine
+  log-service:
+    build: ./service_log
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      - RABBITMQ_DEFAULT_USER=myuser
-      - RABBITMQ_DEFAULT_PASS=mypassword
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: >
-      sh -c "
-        rabbitmq-server &
-        sleep 10 &&
-        rabbitmqctl list_users | grep myuser || rabbitmqctl add_user myuser mypassword &&
-        rabbitmqctl set_user_tags myuser administrator &&
-        rabbitmqctl set_permissions -p / myuser '.*' '.*' '.*' &&
-        rabbitmqctl delete_user guest &&
-        rabbitmqctl stop &&
-        rabbitmq-server
-      "
-
-  gateway:
-    image: nginx:alpine
-    ports:
-      - "8000:80"
-    depends_on:
-      app:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+      - "8001:8000"
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./service_log/app:/app/app
+    environment:
+      - DATABASE_URL=sqlite:///./test.db
 
-volumes:
-  app_data:
+  image-processing-service:
+    build: ./service_image_processing
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./service_image_processing/app:/app/app
+    environment:
+      - DATABASE_URL=sqlite:///./test.db
+
+networks:
+  default:
+    driver: bridge
