@@ -1,18 +1,6 @@
-from fastapi import Depends, HTTPException
-from sqlalchemy.orm import Session
-from . import app, models
+from fastapi import APIRouter
+from controllers import todo_controller
 
-def get_db():
-    db = models.SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+router = APIRouter()
 
-@app.post("/logs/")
-def create_log(action: str, user_id: int, db: Session = Depends(get_db)):
-    db_log = models.Log(action=action, user_id=user_id)
-    db.add(db_log)
-    db.commit()
-    db.refresh(db_log)
-    return db_log
+router.include_router(todo_controller.router, prefix="/todo", tags=["todo"])

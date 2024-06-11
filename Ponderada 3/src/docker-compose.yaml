@@ -22,7 +22,7 @@ services:
       - rabbitmq
 
   image-service:
-    build: ./service-image
+    build: ./service-image-processing
     container_name: image-service
     ports:
       - "8003:8000"

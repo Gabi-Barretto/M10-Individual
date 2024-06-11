@@ -1,17 +1,17 @@
-from sqlalchemy import Column, Integer, String, create_engine, Sequence
+from sqlalchemy import Column, Integer, String, Boolean, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+import datetime
 
 Base = declarative_base()
 
-class Log(Base):
-    __tablename__ = 'logs'
-    id = Column(Integer, Sequence('log_id_seq'), primary_key=True)
-    action = Column(String(50))
-    user_id = Column(Integer)
+class TodoItem(Base):
+    __tablename__ = 'todo_items'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String(100), nullable=False)
+    description = Column(String(255))
+    completed = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.datetime.utcnow)
 
-# Database setup
-DATABASE_URL = "sqlite:///./test.db"
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base.metadata.create_all(bind=engine)
+    def __repr__(self):
+        return f'<TodoItem {self.title}>'
