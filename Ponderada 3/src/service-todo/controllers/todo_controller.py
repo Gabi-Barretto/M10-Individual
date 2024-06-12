@@ -3,12 +3,15 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from services.todo_service import get_todos, create_todo_item, get_todo_item, update_todo_item, delete_todo_item
 from database import get_db
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 router = APIRouter()
 
 class TodoCreate(BaseModel):
     title: str
-    description: str = None
+    description: str
 
 class TodoUpdate(BaseModel):
     title: str = None
@@ -22,6 +25,7 @@ def read_todos(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @router.post("/todos", response_model=TodoCreate)
 def create_todo(todo: TodoCreate, db: Session = Depends(get_db)):
+    logging.info(f"Received todo: {todo.title}")
     return create_todo_item(db=db, title=todo.title, description=todo.description)
 
 @router.get("/todos/{todo_id}")

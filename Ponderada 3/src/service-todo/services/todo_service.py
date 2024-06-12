@@ -4,7 +4,7 @@ from models.todo_model import TodoItem
 def get_todos(db: Session, skip: int = 0, limit: int = 100):
     return db.query(TodoItem).offset(skip).limit(limit).all()
 
-def create_todo_item(db: Session, title: str, description: str = None):
+def create_todo_item(db: Session, title: str, description: str):
     todo_item = TodoItem(title=title, description=description)
     db.add(todo_item)
     db.commit()

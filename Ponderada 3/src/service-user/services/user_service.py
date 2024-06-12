@@ -23,6 +23,9 @@ def get_user_by_username(db: Session, username: str):
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
+def get_all_users(db: Session):
+    return db.query(User).all()
+
 def create_user(db: Session, username: str, email: str, password: str):
     hashed_password = pwd_context.hash(password)
     new_user = User(username=username, email=email, password_hash=hashed_password)

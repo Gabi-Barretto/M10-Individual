@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from services.user_service import create_user, login_user, get_user_by_email
+from services.user_service import create_user, login_user, get_user_by_email, get_all_users
 from database import get_db
 
 router = APIRouter()
@@ -28,3 +28,9 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     if not token:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return token
+
+
+@router.get("/all")
+def get_all_users_endpoint(db: Session = Depends(get_db)):
+    users = get_all_users(db)
+    return users
