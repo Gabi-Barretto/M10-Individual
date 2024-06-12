@@ -15,7 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   void _login() async {
@@ -24,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final body = jsonEncode({
-      'email': _emailController.text,
+      'username': _usernameController.text,
       'password': _passwordController.text,
     });
 
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', data['access_token']);
 
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ContentPage()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ContentPage()));
         Fluttertoast.showToast(
           msg: "Login Successful",
           toastLength: Toast.LENGTH_SHORT,
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
           fontSize: 16.0,
         );
       } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ErrorPage()));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ErrorPage()));
         Fluttertoast.showToast(
           msg: "Login Failed: ${jsonDecode(response.body)['message']}",
           toastLength: Toast.LENGTH_LONG,
@@ -57,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       }
     } catch (e) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ErrorPage()));
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const ErrorPage()));
       Fluttertoast.showToast(
         msg: "Error: $e",
         toastLength: Toast.LENGTH_LONG,
@@ -82,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextFormField(
-              controller: _emailController,
+              controller: _usernameController,
               decoration: const InputDecoration(
                 labelText: 'E-mail',
                 border: OutlineInputBorder(),
@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => RegisterPage()));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const RegisterPage()));
               },
               child: const Text('Não tem uma conta? Registre-se aqui.'),
             ),

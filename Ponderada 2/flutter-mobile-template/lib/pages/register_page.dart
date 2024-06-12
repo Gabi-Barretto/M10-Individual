@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
@@ -18,7 +20,7 @@ class _RegisterPageState extends State<RegisterPage> {
       'Content-Type': 'application/json; charset=UTF-8',
     };
     final body = jsonEncode({
-      'name': _usernameController.text,
+      'username': _usernameController.text, // Altere "name" para "username"
       'password': _passwordController.text,
       'email': _emailController.text,
     });
@@ -35,13 +37,13 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      appBar: AppBar(title: const Text('Register')),
       body: Column(
         children: <Widget>[
-          TextField(controller: _usernameController, decoration: InputDecoration(labelText: 'Username')),
-          TextField(controller: _passwordController, decoration: InputDecoration(labelText: 'Password'), obscureText: true),
-          TextField(controller: _emailController, decoration: InputDecoration(labelText: 'Email')),
-          ElevatedButton(onPressed: registerUser, child: Text('Register'))
+          TextField(controller: _usernameController, decoration: const InputDecoration(labelText: 'Username')),
+          TextField(controller: _passwordController, decoration: const InputDecoration(labelText: 'Password'), obscureText: true),
+          TextField(controller: _emailController, decoration: const InputDecoration(labelText: 'Email')),
+          ElevatedButton(onPressed: registerUser, child: const Text('Register'))
         ],
       ),
     );
