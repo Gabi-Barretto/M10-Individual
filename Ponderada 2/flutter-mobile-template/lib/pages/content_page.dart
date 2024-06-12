@@ -3,8 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ContentPage extends StatefulWidget {
   const ContentPage({super.key});
@@ -16,6 +14,7 @@ class ContentPage extends StatefulWidget {
 class _ContentPageState extends State<ContentPage> {
   String imageUrl = "https://picsum.photos/300";
   File? _image;
+  String? _processedImageUrl;
   final ImagePicker _picker = ImagePicker();
 
   void _refreshImage() {
@@ -25,21 +24,15 @@ class _ContentPageState extends State<ContentPage> {
   }
 
   Future<void> _pickImage() async {
-    // Solicitar permissão de armazenamento
-    if (await Permission.storage.request().isGranted) {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
-      if (pickedFile != null) {
-        setState(() {
-          _image = File(pickedFile.path);
-        });
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+        _processedImageUrl = null;  // Reset processed image when a new image is picked
+      });
 
-        await _uploadImage(_image!);
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Permissão de armazenamento negada')),
-      );
+      await _uploadImage(_image!);
     }
   }
 
@@ -47,70 +40,77 @@ class _ContentPageState extends State<ContentPage> {
     final request = http.MultipartRequest('POST', Uri.parse('http://10.0.2.2:8003/image/remove-background'));
     request.files.add(await http.MultipartFile.fromPath('file', image.path));
 
-    final response = await request.send();
+    try {
+      final response = await request.send();
 
-    if (response.statusCode == 200) {
-      final responseData = await response.stream.bytesToString();
-      final responseBody = jsonDecode(responseData);
-      final base64Image = responseBody['base64_image'];
+      if (response.statusCode == 200) {
+        final responseData = await response.stream.bytesToString();
+        final responseBody = jsonDecode(responseData);
+        final base64Image = responseBody['base64_image'];
 
-      // Decode the base64 image
-      final bytes = base64Decode(base64Image);
-
-      // Get the application documents directory
-      final directory = await getExternalStorageDirectory();
-      if (directory != null) {
-        final filePath = '${directory.path}/processed_image.png';
-
-        // Save the image as a file
-        final file = File(filePath);
-        await file.writeAsBytes(bytes);
-
-        // Notify the user
+        setState(() {
+          _processedImageUrl = base64Image;
+        });
+      } else {
+        final responseData = await response.stream.bytesToString();
+        final responseBody = jsonDecode(responseData);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Imagem salva em $filePath')),
+          SnackBar(content: Text('Falha ao fazer upload da imagem: ${responseBody['detail']}')),
         );
       }
-    } else {
-      print('Failed to upload image: ${response.statusCode}');
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Falha ao fazer upload da imagem')),
+        SnackBar(content: Text('Erro no upload da imagem: $e')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Defina o tamanho máximo para a imagem processada
+    final double maxImageHeight = MediaQuery.of(context).size.height * 0.4; // 40% da altura da tela
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Conteúdo Secreto'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Conteúdo Secreto',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            _image == null
-                ? Image.network(
-              imageUrl,
-              key: ValueKey(imageUrl),
-            )
-                : Image.file(_image!),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _refreshImage,
-              child: const Text('Refresh Page'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: const Text('Upload Image'),
-            ),
-          ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const SizedBox(height: 20),
+              SizedBox(
+                width: maxImageHeight, // Largura proporcional à altura
+                height: maxImageHeight, // Altura proporcional à tela
+                child: Image.network(
+                  imageUrl,
+                  key: ValueKey(imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _refreshImage,
+                child: const Text('Refresh Page'),
+              ),
+              const SizedBox(height: 20),
+              if (_processedImageUrl != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.memory(
+                    base64Decode(_processedImageUrl!),
+                    fit: BoxFit.contain,
+                    height: maxImageHeight, // Manter a lógica proporcional
+                  ),
+                ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _pickImage,
+                child: const Text('Upload Image'),
+              ),
+            ],
+          ),
         ),
       ),
     );
