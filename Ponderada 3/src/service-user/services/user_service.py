@@ -32,7 +32,6 @@ def create_user(db: Session, username: str, email: str, password: str):
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
-    send_message_to_queue('user_registration', f'User {username} registered.')
     return new_user
 
 def authenticate_user(db: Session, username: str, password: str):

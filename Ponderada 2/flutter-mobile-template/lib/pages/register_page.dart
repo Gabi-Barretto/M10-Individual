@@ -13,7 +13,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _emailController = TextEditingController();
 
   Future<void> registerUser() async {
-    final url = Uri.parse('http://10.0.2.2:5000/register');
+    final url = Uri.parse('http://10.0.2.2:8001/users/register');
     final headers = <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     };
