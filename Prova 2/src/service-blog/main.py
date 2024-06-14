@@ -6,12 +6,11 @@ import uvicorn
 import logging
 import os
 
-# Configure logging
 os.makedirs("./logs", exist_ok=True)
 logging.basicConfig(
     filename='./logs/app_logs.log',
     format='%(asctime)s - %(levelname)s - %(message)s',
-    level=logging.INFO
+    level=logging.WARNING
 )
 
 app = FastAPI()
@@ -28,7 +27,7 @@ async def log_requests(request: Request, call_next):
     response = await call_next(request)
     log_data = f"METHOD: {request.method}, URL: {request.url}, STATUS: {response.status_code}"
     if response.status_code >= 400:
-        logging.info(log_data)
+        logging.warning(log_data)
     return response
 
 @app.post('/blog', response_model=BlogPost)
@@ -45,15 +44,15 @@ def create_blog_post(request: BlogPost):
 
 @app.get('/blog')
 def get_blog_posts():
-    return JSONResponse({'posts': [blog.dict() for blog in blog_posts]}), 200
+    return JSONResponse({'posts': [blog.dict() for blog in blog_posts]}, status_code=200)
 
 @app.get('/blog/{id}')
 def get_blog_post(id: int):
     for post in blog_posts:
         if post.id == id:
-            return JSONResponse(content={'post': post.dict()}), 200
+            return JSONResponse(content={'post': post.dict()}, status_code=200)
     logging.warning(f"BlogPost not found: {id}")
-    return JSONResponse(content={'error': 'Post not found'}), 404
+    return JSONResponse(content={'error': 'Post not found'}, status_code=404)
 
 @app.delete('/blog/{id}')
 def delete_blog_post(id: int):
@@ -61,9 +60,9 @@ def delete_blog_post(id: int):
         if post.id == id:
             blog_posts.remove(post)
             logging.warning(f"Deleted BlogPost: {id}")
-            return JSONResponse(content={'status': 'success'}), 200
+            return JSONResponse(content={'status': 'success'}, status_code=200)
     logging.warning(f"BlogPost not found: {id}")
-    return JSONResponse(content={'error': 'Post not found'}), 404
+    return JSONResponse(content={'error': 'Post not found'}, status_code=404)
 
 @app.put('/blog/{id}')
 def update_blog_post(id: int, request: BlogPost):
