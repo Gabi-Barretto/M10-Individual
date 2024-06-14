@@ -4,8 +4,6 @@ from models.user_model import User
 from utils.auth import create_access_token
 import pika
 
-from 
-
 def get_rabbitmq_connection():
     parameters = pika.ConnectionParameters('rabbitmq')
     return pika.BlockingConnection(parameters)

@@ -69,38 +69,6 @@ services:
     networks:
       - app-network
 
-  filebeat:
-    image: docker.elastic.co/beats/filebeat:7.13.4
-    container_name: filebeat
-    volumes:
-      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
-      - ./logs:/var/log
-    depends_on:
-      - db
-      - rabbitmq
-    networks:
-      - app-network
-
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.4
-    container_name: elasticsearch
-    environment:
-      - discovery.type=single-node
-    ports:
-      - "9200:9200"
-    networks:
-      - app-network
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:7.13.4
-    container_name: kibana
-    ports:
-      - "5601:5601"
-    environment:
-      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
-    networks:
-      - app-network
-
   rabbitmq:
     image: "rabbitmq:3-management"
     container_name: rabbitmq

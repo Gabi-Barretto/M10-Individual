@@ -9,25 +9,14 @@ Este documento descreve a estrutura e funcionalidades de um projeto FastAPI que 
 - **FastAPI**: Framework web Python assíncrono de alto desempenho.
 - **SQLAlchemy**: ORM para interação com banco de dados.
 - **SQLite**: Banco de dados utilizado.
-- **Jinja2**: Engine de templates para renderização de páginas HTML.
 - **uvicorn**: Servidor ASGI de alto desempenho.
 - **RabbitMQ**: Sistema de mensageria para gerenciamento de logs.
-
-## Estrutura do Projeto
-
-- **main.py**: Arquivo principal da aplicação, onde são definidas as rotas, configuração do banco de dados, JWT e RabbitMQ.
-- **database/database.py**: Configurações do SQLAlchemy e criação da instância do banco de dados.
-- **database/models.py**: Define os modelos do banco de dados, no caso, o modelo User.
-- **templates/**: Pasta contendo os templates HTML para login, registro e página de erro.
 
 ## Funcionalidades
 
 - **Registro de Usuários**: A rota `/register` permite registrar novos usuários, armazenando as informações no banco de dados.
 - **Login**: A rota `/login` autentica o usuário com email e senha, gerando um token JWT e armazenando-o em um cookie.
 - **CRUD de Usuários**: As rotas `/users`, `/users/{user_id}`, permitem listar, buscar, atualizar e deletar usuários.
-- **Log de Ações**: As rotas `/send-log` e `/receive-log` permitem o envio e recebimento de logs via RabbitMQ, o mesmo método chamado nesses endpoints e foi aplicado nas rotas de cadastro e login.
-
-![Rabbit Existe](./Mídia/image.png)
 
 ## Instruções para Rodar o Backend
 

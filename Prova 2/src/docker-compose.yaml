@@ -1,0 +1,26 @@
+version: '3.10'
+
+services:
+  blog-service:
+    build: ./service-blog
+    container_name: blog-service
+    ports:
+      - "8001:8000"
+    networks:
+      - app-network
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - blog-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
