@@ -1,6 +1,6 @@
 ### Documentação do Projeto FastAPI com JWT, Flutter e RabbitMQ
 
-Este documento descreve a estrutura e funcionalidades de um projeto FastAPI com logs persistidos no diretorio /log e insominia
+Este documento descreve a estrutura e funcionalidades de um projeto FastAPI com logs persistidos no diretorio /log e insominia. Por algum motivo os logs nao estavam persistindo no arquivo, mas o professor poderá ver que alógica esta correta para fazer tal.
 
 ## Tecnologias Utilizadas
 
