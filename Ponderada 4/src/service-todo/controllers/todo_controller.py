@@ -5,7 +5,7 @@ from services.todo_service import get_todos, create_todo_item, get_todo_item, up
 from database import get_db
 import requests
 
-LOG_ENDPOINT = "http://localhost:8000/log/logs"
+LOG_ENDPOINT = "http://localhost:8004/log/logs"
 
 def log_usage(level: str, message: str):
     try:

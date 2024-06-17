@@ -4,7 +4,7 @@ from services.image_service import remove_background
 import requests
 import base64
 
-LOG_ENDPOINT = "http://localhost:8000/log/logs"
+LOG_ENDPOINT = "http://localhost:8004/log/logs"
 
 def log_usage(level: str, message: str):
     try:

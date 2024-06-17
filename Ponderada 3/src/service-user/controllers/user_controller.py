@@ -5,15 +5,14 @@ from services.user_service import create_user, login_user, get_user_by_email, ge
 from database import get_db
 import requests
 
-LOG_ENDPOINT = "http://localhost:8000/log/logs" 
+LOGGING_SERVICE_URL = "http://log-service:8004/logs/"
 
 def log_usage(level: str, message: str):
     try:
-        response = requests.post(LOG_ENDPOINT, json={"level": level, "message": message})
+        response = requests.post(LOGGING_SERVICE_URL, json={"level": level, "message": message})
         response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to log usage: {e}")
-
+    except requests.RequestException as e:
+        print(f"Failed to log event: {e}")
 
 router = APIRouter()
 

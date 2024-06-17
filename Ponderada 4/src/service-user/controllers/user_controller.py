@@ -5,7 +5,7 @@ from services.user_service import create_user, login_user, get_user_by_email, ge
 from database import get_db
 import requests
 
-LOG_ENDPOINT = "http://localhost:8000/log/logs" 
+LOG_ENDPOINT = "http://localhost:8004/log/logs" 
 
 def log_usage(level: str, message: str):
     try:
